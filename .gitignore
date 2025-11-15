@@ -17,6 +17,11 @@ dist-ssr
 .env.local
 .env.production
 
+# Firebase configuration files (if re-enabled in future)
+.firebaserc
+firebase.json
+.firebase/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

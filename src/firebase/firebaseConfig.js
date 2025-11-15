@@ -1,3 +1,8 @@
+// FIREBASE INTEGRATION DISABLED
+// This file has been commented out to disable Firebase integration.
+// To re-enable Firebase, uncomment the code below and ensure firebase package is installed.
+
+/*
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
@@ -21,3 +26,10 @@ export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 
 export default app;
+*/
+
+// Stub exports to prevent import errors
+export const auth = null;
+export const db = null;
+export const googleProvider = null;
+export default null;
