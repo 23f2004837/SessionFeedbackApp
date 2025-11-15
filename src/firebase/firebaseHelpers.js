@@ -17,7 +17,6 @@ import {
   getDocs,
   onSnapshot,
   serverTimestamp,
-  where,
 } from 'firebase/firestore';
 import { auth, db, googleProvider } from './firebaseConfig';
 
