@@ -1,0 +1,114 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is the owner
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Helper function to validate email domain
+    function hasValidDomain() {
+      return request.auth != null && 
+             request.auth.token.email.matches('.*@iitm[.]ac[.]in$');
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Anyone authenticated can read user documents
+      allow read: if isAuthenticated();
+      
+      // Only the user themselves can create their own document
+      allow create: if isAuthenticated() && 
+                      isOwner(userId) && 
+                      hasValidDomain() &&
+                      request.resource.data.uid == request.auth.uid &&
+                      request.resource.data.email == request.auth.token.email &&
+                      request.resource.data.role == 'user';
+      
+      // Users can update their own document (but not role)
+      allow update: if isOwner(userId) && 
+                      !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'uid']);
+      
+      // Admins can update any user
+      allow update: if isAdmin();
+      
+      // No one can delete user documents
+      allow delete: if false;
+    }
+    
+    // Feedbacks collection
+    match /feedbacks/{feedbackId} {
+      // Anyone authenticated can read feedbacks
+      allow read: if isAuthenticated();
+      
+      // Authenticated users can create feedback
+      allow create: if isAuthenticated() && 
+                      hasValidDomain() &&
+                      request.resource.data.authorUid == request.auth.uid &&
+                      request.resource.data.rating is int &&
+                      request.resource.data.rating >= 1 &&
+                      request.resource.data.rating <= 5 &&
+                      request.resource.data.comment is string &&
+                      request.resource.data.comment.size() > 0 &&
+                      request.resource.data.comment.size() <= 2000 &&
+                      (!('suggestions' in request.resource.data) || 
+                       request.resource.data.suggestions == null ||
+                       (request.resource.data.suggestions is string && 
+                        request.resource.data.suggestions.size() <= 2000));
+      
+      // Only the author can update their feedback
+      allow update: if isAuthenticated() && 
+                      isOwner(resource.data.authorUid) &&
+                      request.resource.data.authorUid == resource.data.authorUid &&
+                      request.resource.data.rating is int &&
+                      request.resource.data.rating >= 1 &&
+                      request.resource.data.rating <= 5 &&
+                      request.resource.data.comment is string &&
+                      request.resource.data.comment.size() > 0 &&
+                      request.resource.data.comment.size() <= 2000;
+      
+      // Only the author or admin can delete feedback
+      allow delete: if isAuthenticated() && 
+                      (isOwner(resource.data.authorUid) || isAdmin());
+      
+      // Comments subcollection
+      match /comments/{commentId} {
+        // Anyone authenticated can read comments
+        allow read: if isAuthenticated();
+        
+        // Authenticated users can create comments
+        allow create: if isAuthenticated() && 
+                        hasValidDomain() &&
+                        request.resource.data.commenterUid == request.auth.uid &&
+                        request.resource.data.text is string &&
+                        request.resource.data.text.size() > 0 &&
+                        request.resource.data.text.size() <= 1000;
+        
+        // Only the commenter can update their comment
+        allow update: if isAuthenticated() && 
+                        isOwner(resource.data.commenterUid) &&
+                        request.resource.data.commenterUid == resource.data.commenterUid &&
+                        request.resource.data.text is string &&
+                        request.resource.data.text.size() > 0 &&
+                        request.resource.data.text.size() <= 1000;
+        
+        // Only the commenter or admin can delete comments
+        allow delete: if isAuthenticated() && 
+                        (isOwner(resource.data.commenterUid) || isAdmin());
+      }
+    }
+  }
+}
