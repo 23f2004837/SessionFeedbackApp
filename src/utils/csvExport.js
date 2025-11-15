@@ -77,7 +77,7 @@ const formatDate = (timestamp) => {
       return '';
     }
     return date.toISOString();
-  } catch (error) {
+  } catch {
     return '';
   }
 };

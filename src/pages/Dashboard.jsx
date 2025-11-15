@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { subscribeFeedbacks } from '../firebase/firebaseHelpers';
-import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
 import ErrorMessage from '../components/ErrorMessage';
 
@@ -9,7 +8,6 @@ const Dashboard = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +31,7 @@ const Dashboard = () => {
         hour: '2-digit',
         minute: '2-digit',
       });
-    } catch (error) {
+    } catch {
       return 'Recently';
     }
   };
