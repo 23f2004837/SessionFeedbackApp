@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../firebase/firebaseConfig';
-import { getUserRole } from '../firebase/firebaseHelpers';
+// FIREBASE DISABLED - Original Firebase imports commented out
+// import { onAuthStateChanged } from 'firebase/auth';
+// import { auth } from '../firebase/firebaseConfig';
+// import { getUserRole } from '../firebase/firebaseHelpers';
 
 const AuthContext = createContext();
 
@@ -15,11 +16,14 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [userRole, setUserRole] = useState('user');
-  const [loading, setLoading] = useState(true);
+  // FIREBASE DISABLED - Without Firebase, user is always null and loading is always false
+  const [currentUser] = useState(null);
+  const [userRole] = useState('user');
+  const [loading] = useState(false);
 
   useEffect(() => {
+    // FIREBASE DISABLED - Original Firebase auth listener commented out
+    /*
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       
@@ -35,6 +39,7 @@ export const AuthProvider = ({ children }) => {
     });
 
     return unsubscribe;
+    */
   }, []);
 
   const value = {

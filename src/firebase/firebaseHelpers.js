@@ -1,3 +1,10 @@
+// FIREBASE INTEGRATION DISABLED
+// This file has been modified to provide stub implementations instead of Firebase calls.
+// To re-enable Firebase, restore the original implementation from git history.
+
+/*
+ * ORIGINAL FIREBASE IMPLEMENTATION COMMENTED OUT BELOW
+ * 
 import {
   signInWithPopup,
   signOut as firebaseSignOut,
@@ -251,4 +258,76 @@ export const getAllFeedbacks = async () => {
     console.error('Error getting all feedbacks:', error);
     throw error;
   }
+};
+*/
+
+// STUB IMPLEMENTATIONS - Firebase functionality disabled
+// These are placeholder functions that prevent the app from crashing
+
+// Authentication helpers
+export const signInWithGoogle = async () => {
+  throw new Error('Firebase authentication is currently disabled. Please contact the administrator.');
+};
+
+export const signOut = async () => {
+  console.log('Sign out called (Firebase disabled)');
+  return Promise.resolve();
+};
+
+// Get user role
+export const getUserRole = async () => {
+  return 'user';
+};
+
+// Feedback CRUD operations
+export const createFeedback = async () => {
+  throw new Error('Firebase is currently disabled. Feedback submission is not available.');
+};
+
+export const updateFeedback = async () => {
+  throw new Error('Firebase is currently disabled. Feedback update is not available.');
+};
+
+export const deleteFeedback = async () => {
+  throw new Error('Firebase is currently disabled. Feedback deletion is not available.');
+};
+
+// Get paginated feedbacks
+export const getFeedbacks = async () => {
+  return {
+    feedbacks: [],
+    lastDoc: null,
+    hasMore: false,
+  };
+};
+
+// Real-time listener for feedbacks
+export const subscribeFeedbacks = (callback) => {
+  // Return empty array immediately
+  callback([]);
+  // Return unsubscribe function
+  return () => {};
+};
+
+// Get single feedback
+export const getFeedback = async () => {
+  return null;
+};
+
+// Comment operations
+export const addComment = async () => {
+  throw new Error('Firebase is currently disabled. Comment submission is not available.');
+};
+
+// Real-time listener for comments
+export const subscribeComments = (feedbackId, callback) => {
+  // Return empty array immediately
+  callback([]);
+  // Return unsubscribe function
+  return () => {};
+};
+
+// Admin operations - Get all feedbacks for export
+export const getAllFeedbacks = async () => {
+  return [];
 };
